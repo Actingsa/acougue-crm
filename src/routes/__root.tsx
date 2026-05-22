@@ -80,7 +80,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Plataforma SaaS multiempresa para açougues, frigoríficos e redes de varejo premium de carnes. Rendimento, rastreabilidade, PDV offline e inteligência operacional em tempo real.",
       },
       { name: "author", content: "CarneOS Systems" },
-      { property: "og:title", content: "CarneOS — Ciência na Carne. Lucro na Precisão." },
+      { property: "og:title", content: "CarneOS — ERP de Precisão para Açougues Premium" },
       {
         property: "og:description",
         content:
@@ -88,6 +88,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "CarneOS — ERP de Precisão para Açougues Premium" },
+      { name: "description", content: "Lovable Generated Project" },
+      { property: "og:description", content: "Lovable Generated Project" },
+      { name: "twitter:description", content: "Lovable Generated Project" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ebfe26a7-de30-4b35-b592-bb4f68de4243/id-preview-329dc68a--701a99ab-8bcc-40e6-8254-d372ae2591ff.lovable.app-1779415657073.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ebfe26a7-de30-4b35-b592-bb4f68de4243/id-preview-329dc68a--701a99ab-8bcc-40e6-8254-d372ae2591ff.lovable.app-1779415657073.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
