@@ -50,7 +50,7 @@ export function DashboardSidebar() {
       <div className="border-b border-border p-6">
         <Link to="/" className="mb-6 flex items-center gap-2 text-xl font-black tracking-tighter">
           <span className="text-primary">CARNE</span>
-          <span className="text-foreground">OS</span>
+          <span className="text-foreground">.CRM</span>
         </Link>
         <div className="font-mono text-[10px] uppercase text-muted-foreground">Empresa Ativa</div>
         <button
