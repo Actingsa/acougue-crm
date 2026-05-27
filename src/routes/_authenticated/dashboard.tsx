@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
   head: () => ({
     meta: [{ title: "Terminal · CarneOS" }, { name: "robots", content: "noindex" }],
