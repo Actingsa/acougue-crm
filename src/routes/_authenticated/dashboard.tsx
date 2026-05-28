@@ -284,8 +284,8 @@ function DashboardPage() {
               </div>
             </div>
           </section>
-        </main>
-      </div>
-    </div>
+      </main>
+    </>
   );
 }
+
