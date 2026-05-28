@@ -57,14 +57,15 @@ export async function pushSale(sale: PendingSale): Promise<{ ok: boolean; error?
     _company_id: sale.company_id,
     _client_uuid: sale.client_uuid,
     _terminal: sale.terminal,
-    _customer_id: sale.customer_id,
+    _customer_id: sale.customer_id as unknown as string,
     _pay_method: sale.pay_method,
     _discount_cents: sale.discount_cents,
-    _items: sale.items as unknown as object,
+    _items: sale.items as unknown as never,
   });
   if (error) return { ok: false, error: error.message };
   return { ok: true };
 }
+
 
 export async function drainQueue() {
   const all = queue.list();
