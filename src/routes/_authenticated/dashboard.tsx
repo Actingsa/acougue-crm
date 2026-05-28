@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { Topbar } from "@/components/dashboard/Topbar";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
@@ -34,36 +34,10 @@ const ABC = [
 
 function DashboardPage() {
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
-      <DashboardSidebar />
+    <>
+      <Topbar section="Monitoramento" />
+      <main className="flex-1 space-y-8 overflow-y-auto p-6 lg:p-8">
 
-      <div className="flex flex-1 flex-col">
-        {/* Topbar */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/80 px-6 backdrop-blur-md">
-          <div className="flex items-center gap-4">
-            <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-              Terminal / Monitoramento
-            </div>
-            <span className="inline-flex items-center gap-2 border border-success/30 bg-success/10 px-2 py-0.5 font-mono text-[10px] uppercase text-success">
-              <span className="size-1.5 animate-pulse rounded-full bg-success" />
-              Sistema online
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <input
-              placeholder="Buscar corte, lote, cliente…"
-              className="hidden w-64 border border-border bg-surface px-3 py-2 font-mono text-xs outline-none focus:border-primary md:block"
-            />
-            <button className="border border-border px-3 py-2 font-mono text-[10px] uppercase tracking-widest hover:bg-white/5">
-              + Novo Pedido
-            </button>
-            <div className="flex size-9 items-center justify-center rounded-full border border-border bg-surface font-mono text-[10px] uppercase">
-              MV
-            </div>
-          </div>
-        </header>
-
-        <main className="flex-1 space-y-8 overflow-y-auto p-6 lg:p-8">
           {/* KPI Bento */}
           <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {KPIS.map((k) => (
@@ -310,8 +284,8 @@ function DashboardPage() {
               </div>
             </div>
           </section>
-        </main>
-      </div>
-    </div>
+      </main>
+    </>
   );
 }
+
