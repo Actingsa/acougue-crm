@@ -112,7 +112,7 @@ function AdminPage() {
     if (!email) return;
     const { data: p } = await supabase.from("profiles").select("id, email").eq("email", email).maybeSingle();
     if (!p) return toast.error("Usuário não encontrado. Peça para se cadastrar primeiro.");
-    const { error } = await supabase.from("platform_admins").insert({ user_id: p.id, email: p.email });
+    const { error } = await supabase.from("platform_admins").insert({ user_id: p.id, email: p.email ?? email });
     if (error) return toast.error(error.message);
     setNewAdmin("");
     toast.success("Super Admin adicionado");
