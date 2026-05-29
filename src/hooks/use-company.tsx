@@ -2,12 +2,22 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./use-auth";
 
-export type Company = { id: string; name: string; slug: string; plan: string };
+export type LicenseStatus = "trial" | "active" | "inactive" | "suspended";
+export type Company = {
+  id: string;
+  name: string;
+  slug: string;
+  plan: string;
+  license_status: LicenseStatus;
+  license_expires_at: string | null;
+};
 
 type Ctx = {
   companies: Company[];
   current: Company | null;
   loading: boolean;
+  isPlatformAdmin: boolean;
+  licenseActive: boolean;
   setCurrent: (c: Company) => Promise<void>;
   refresh: () => Promise<void>;
 };
@@ -16,6 +26,8 @@ const CompanyContext = createContext<Ctx>({
   companies: [],
   current: null,
   loading: true,
+  isPlatformAdmin: false,
+  licenseActive: false,
   setCurrent: async () => {},
   refresh: async () => {},
 });
@@ -25,21 +37,33 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [current, setCurrentState] = useState<Company | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
 
   const load = async () => {
     if (!user) {
       setCompanies([]);
       setCurrentState(null);
+      setIsPlatformAdmin(false);
       setLoading(false);
       return;
     }
     setLoading(true);
+
+    const { data: admin } = await supabase
+      .from("platform_admins")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    const isAdmin = !!admin;
+    setIsPlatformAdmin(isAdmin);
+
     const { data: cs } = await supabase
       .from("companies")
-      .select("id, name, slug, plan")
+      .select("id, name, slug, plan, license_status, license_expires_at")
       .order("created_at", { ascending: true });
     const list = (cs ?? []) as Company[];
     setCompanies(list);
+
     const { data: p } = await supabase
       .from("profiles")
       .select("current_company_id")
@@ -65,8 +89,11 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const licenseActive = !!current && (current.license_status === "active" || current.license_status === "trial") &&
+    (!current.license_expires_at || new Date(current.license_expires_at) > new Date());
+
   return (
-    <CompanyContext.Provider value={{ companies, current, loading, setCurrent, refresh: load }}>
+    <CompanyContext.Provider value={{ companies, current, loading, isPlatformAdmin, licenseActive, setCurrent, refresh: load }}>
       {children}
     </CompanyContext.Provider>
   );

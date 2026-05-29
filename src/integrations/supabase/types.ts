@@ -64,6 +64,10 @@ export type Database = {
           created_at: string
           created_by: string
           id: string
+          license_expires_at: string | null
+          license_notes: string | null
+          license_seats: number
+          license_status: Database["public"]["Enums"]["license_status"]
           name: string
           plan: Database["public"]["Enums"]["company_plan"]
           slug: string
@@ -74,6 +78,10 @@ export type Database = {
           created_at?: string
           created_by: string
           id?: string
+          license_expires_at?: string | null
+          license_notes?: string | null
+          license_seats?: number
+          license_status?: Database["public"]["Enums"]["license_status"]
           name: string
           plan?: Database["public"]["Enums"]["company_plan"]
           slug: string
@@ -84,6 +92,10 @@ export type Database = {
           created_at?: string
           created_by?: string
           id?: string
+          license_expires_at?: string | null
+          license_notes?: string | null
+          license_seats?: number
+          license_status?: Database["public"]["Enums"]["license_status"]
           name?: string
           plan?: Database["public"]["Enums"]["company_plan"]
           slug?: string
@@ -254,6 +266,27 @@ export type Database = {
           id?: string
           token?: string
           used_at?: string | null
+        }
+        Relationships: []
+      }
+      platform_admins: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          email: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          email: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -590,6 +623,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      company_license_active: {
+        Args: { _company_id: string }
+        Returns: boolean
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -610,6 +647,7 @@ export type Database = {
         Args: { _company_id: string; _user_id: string }
         Returns: boolean
       }
+      is_platform_admin: { Args: { _user_id: string }; Returns: boolean }
       move_to_dlq: {
         Args: {
           dlq_name: string
@@ -644,6 +682,7 @@ export type Database = {
       app_role: "owner" | "admin" | "manager" | "butcher" | "cashier"
       cash_status: "open" | "closed"
       company_plan: "trial" | "starter" | "pro" | "enterprise"
+      license_status: "trial" | "active" | "inactive" | "suspended"
       pay_method: "cash" | "debit" | "credit" | "pix" | "voucher"
       product_unit: "kg" | "un"
       sale_status: "open" | "paid" | "cancelled"
@@ -778,6 +817,7 @@ export const Constants = {
       app_role: ["owner", "admin", "manager", "butcher", "cashier"],
       cash_status: ["open", "closed"],
       company_plan: ["trial", "starter", "pro", "enterprise"],
+      license_status: ["trial", "active", "inactive", "suspended"],
       pay_method: ["cash", "debit", "credit", "pix", "voucher"],
       product_unit: ["kg", "un"],
       sale_status: ["open", "paid", "cancelled"],
