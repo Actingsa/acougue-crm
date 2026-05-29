@@ -18,7 +18,7 @@ const NAV = [
 export function DashboardSidebar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const { user, signOut } = useAuth();
-  const { companies, current, setCurrent } = useCompany();
+  const { companies, current, setCurrent, isPlatformAdmin } = useCompany();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
