@@ -5,10 +5,10 @@ export function SiteFooter() {
         <div>
           <div className="mb-2 text-2xl font-black tracking-tighter">
             <span className="text-primary">CARNE</span>
-            <span className="text-foreground">.CRM</span>
+            <span className="text-foreground">OS</span>
           </div>
           <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            © 2026 Acting · Software e Tecnologia
+            © 2026 CarneOS Systems · High-Precision Meat Tech
           </p>
         </div>
         <div className="flex gap-12 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
