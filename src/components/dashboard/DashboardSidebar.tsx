@@ -91,6 +91,25 @@ export function DashboardSidebar() {
             </Link>
           );
         })}
+
+        {isPlatformAdmin && (
+          <>
+            <div className="mt-6 mb-3 px-3 font-mono text-[10px] uppercase tracking-widest text-primary">
+              Super Admin
+            </div>
+            <Link
+              to="/admin"
+              className={
+                path.startsWith("/admin")
+                  ? "flex items-center gap-3 border-l-2 border-primary bg-primary/10 p-3"
+                  : "flex items-center gap-3 border-l-2 border-transparent p-3 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+              }
+            >
+              <span className="font-mono text-[10px] text-primary">★</span>
+              <span className="text-sm font-bold uppercase tracking-tighter">Plataforma</span>
+            </Link>
+          </>
+        )}
       </nav>
 
       <div className="border-t border-border p-4">
