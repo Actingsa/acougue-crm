@@ -64,8 +64,8 @@ function AdminPage() {
     );
   }
 
-  const updateCompany = async (id: string, patch: Partial<Row>) => {
-    const { error } = await supabase.from("companies").update(patch).eq("id", id);
+  const updateCompany = async (id: string, patch: Record<string, unknown>) => {
+    const { error } = await supabase.from("companies").update(patch as never).eq("id", id);
     if (error) return toast.error("Falha ao salvar", { description: error.message });
     toast.success("Empresa atualizada");
     await load();
