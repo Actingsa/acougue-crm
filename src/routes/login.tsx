@@ -1,5 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 import bovineAnatomy from "@/assets/bovine-anatomy.png";
 
 export const Route = createFileRoute("/login")({
@@ -11,11 +14,49 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && user) navigate({ to: "/dashboard", replace: true });
+  }, [user, authLoading, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      if (mode === "signup") {
+        const redirectUrl = `${window.location.origin}/dashboard`;
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: redirectUrl,
+            data: { full_name: name, company_name: companyName },
+          },
+        });
+        if (error) throw error;
+        toast.success("Conta criada", { description: "Configurando seu açougue…" });
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        toast.success("Acesso concedido");
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Falha na autenticação";
+      toast.error("Não foi possível autenticar", { description: message });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="grid min-h-screen grid-cols-1 bg-background lg:grid-cols-2">
-      {/* Left — visual */}
       <div className="relative hidden overflow-hidden border-r border-border bg-surface lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.06]">
           <img src={bovineAnatomy} alt="" aria-hidden className="w-full max-w-2xl invert" />
@@ -30,7 +71,7 @@ function LoginPage() {
             Acesso autorizado a operadores credenciados.
           </h2>
           <p className="mt-4 max-w-md text-sm text-muted-foreground">
-            Sessões monitoradas. Autenticação multifator obrigatória para administradores e gerentes de filial.
+            Multi-tenant com isolamento total por empresa. Cada cadastro recebe uma unidade dedicada e segura.
           </p>
         </div>
         <div className="relative z-10 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -38,7 +79,6 @@ function LoginPage() {
         </div>
       </div>
 
-      {/* Right — form */}
       <div className="flex flex-col items-center justify-center px-6 py-16">
         <div className="w-full max-w-sm">
           <Link
@@ -48,67 +88,103 @@ function LoginPage() {
             ← CarneOS
           </Link>
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary">
-            Acesso à Plataforma
+            {mode === "signup" ? "Provisionar Unidade" : "Acesso à Plataforma"}
           </p>
-          <h1 className="mt-3 text-3xl font-black tracking-tighter">Identifique-se</h1>
+          <h1 className="mt-3 text-3xl font-black tracking-tighter">
+            {mode === "signup" ? "Criar conta" : "Identifique-se"}
+          </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Use as credenciais fornecidas pelo administrador da sua unidade.
+            {mode === "signup"
+              ? "Sua empresa será criada automaticamente com seus dados."
+              : "Use as credenciais cadastradas."}
           </p>
 
-          <form
-            className="mt-10 space-y-5"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setLoading(true);
-              setTimeout(() => navigate({ to: "/dashboard" }), 600);
-            }}
-          >
-            <div>
-              <label className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                E-mail Operacional
-              </label>
+          <form className="mt-10 space-y-5" onSubmit={handleSubmit}>
+            {mode === "signup" && (
+              <>
+                <Field label="Seu Nome">
+                  <input
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="João da Silva"
+                    className={inputCls}
+                  />
+                </Field>
+                <Field label="Nome do Açougue / Empresa">
+                  <input
+                    required
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    placeholder="Frigorífico Prime"
+                    className={inputCls}
+                  />
+                </Field>
+              </>
+            )}
+            <Field label="E-mail">
               <input
                 required
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="operador@frigorifico.com"
-                className="w-full border border-border bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
+                className={inputCls}
               />
-            </div>
-            <div>
-              <div className="mb-2 flex items-center justify-between">
-                <label className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                  Senha
-                </label>
-                <a href="#" className="font-mono text-[10px] uppercase tracking-widest text-primary hover:underline">
-                  Recuperar
-                </a>
-              </div>
+            </Field>
+            <Field label="Senha">
               <input
                 required
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full border border-border bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
+                minLength={6}
+                className={inputCls}
               />
-            </div>
+            </Field>
             <button
               type="submit"
               disabled={loading}
               className="flex w-full items-center justify-center bg-primary px-4 py-3 font-mono text-xs font-bold uppercase tracking-widest text-primary-foreground transition-all hover:brightness-110 disabled:opacity-60"
             >
-              {loading ? "Autenticando…" : "Entrar no Terminal"}
+              {loading
+                ? "Processando…"
+                : mode === "signup"
+                ? "Criar conta e entrar"
+                : "Entrar no Terminal"}
             </button>
           </form>
 
           <div className="mt-8 border-t border-border pt-6 text-center">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-              Sem acesso?{" "}
-              <a href="mailto:contato@carneos.app" className="text-primary hover:underline">
-                Solicitar onboarding
-              </a>
-            </p>
+            <button
+              type="button"
+              onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+              className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary"
+            >
+              {mode === "signin" ? (
+                <>Sem conta? <span className="text-primary">Provisionar unidade →</span></>
+              ) : (
+                <>Já possui acesso? <span className="text-primary">Entrar →</span></>
+              )}
+            </button>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+const inputCls =
+  "w-full border border-border bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-primary";
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="mb-2 block font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        {label}
+      </label>
+      {children}
     </div>
   );
 }
