@@ -9,7 +9,7 @@ import { formatBRL, parseBRLInput } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/products")({
   component: ProductsPage,
-  head: () => ({ meta: [{ title: "Produtos · CarneOS" }] }),
+  head: () => ({ meta: [{ title: "Produtos · Carne.CRM" }] }),
 });
 
 type Product = {
