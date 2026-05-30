@@ -9,7 +9,7 @@ import { Select } from "./products";
 
 export const Route = createFileRoute("/_authenticated/inventory")({
   component: InventoryPage,
-  head: () => ({ meta: [{ title: "Estoque · CarneOS" }] }),
+  head: () => ({ meta: [{ title: "Estoque · Carne.CRM" }] }),
 });
 
 type Product = { id: string; name: string; unit: string; stock_qty: number };
