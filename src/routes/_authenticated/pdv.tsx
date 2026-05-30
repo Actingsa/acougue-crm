@@ -9,7 +9,7 @@ import { formatBRL } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/pdv")({
   component: PdvPage,
-  head: () => ({ meta: [{ title: "PDV · CarneOS" }] }),
+  head: () => ({ meta: [{ title: "PDV · Carne.CRM" }] }),
 });
 
 type Product = {
