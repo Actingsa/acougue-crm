@@ -9,7 +9,7 @@ import { Input } from "./products";
 
 export const Route = createFileRoute("/_authenticated/customers")({
   component: CustomersPage,
-  head: () => ({ meta: [{ title: "Clientes · CarneOS" }] }),
+  head: () => ({ meta: [{ title: "Clientes · Carne.CRM" }] }),
 });
 
 type Customer = {
