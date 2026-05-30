@@ -77,13 +77,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#09090b" },
-      { title: "CarneOS — ERP de Precisão para Açougues Premium" },
+      { title: "Carne.CRM — ERP de Precisão para Açougues Premium" },
       {
         name: "description",
         content:
           "Plataforma SaaS multiempresa para açougues, frigoríficos e redes de varejo premium de carnes. Rendimento, rastreabilidade, PDV offline e inteligência operacional em tempo real.",
       },
-      { property: "og:title", content: "CarneOS — ERP de Precisão para Açougues Premium" },
+      { property: "og:title", content: "Carne.CRM — ERP de Precisão para Açougues Premium" },
       {
         property: "og:description",
         content:
