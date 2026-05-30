@@ -7,7 +7,7 @@ export const Route = createFileRoute("/")({
   component: LandingPage,
   head: () => ({
     meta: [
-      { title: "CarneOS — ERP de Precisão para Açougues Premium" },
+      { title: "Carne.CRM — ERP de Precisão para Açougues Premium" },
       {
         name: "description",
         content:
@@ -153,7 +153,7 @@ function LandingPage() {
                     Filial Principal
                   </div>
                   <div className="mt-1 flex items-center justify-between text-sm font-bold">
-                    MATRIZ SÃO PAULO
+                    MATRIZ ITABERABA/BA
                     <span className="text-primary">▼</span>
                   </div>
                 </div>
