@@ -85,7 +85,7 @@ function LoginPage() {
             to="/"
             className="mb-8 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary lg:hidden"
           >
-            ← CarneOS
+            ← Carne.CRM
           </Link>
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary">
             {mode === "signup" ? "Provisionar Unidade" : "Acesso à Plataforma"}
