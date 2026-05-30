@@ -8,7 +8,7 @@ import bovineAnatomy from "@/assets/bovine-anatomy.png";
 export const Route = createFileRoute("/login")({
   component: LoginPage,
   head: () => ({
-    meta: [{ title: "Acesso · CarneOS" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: "Acesso · Carne.CRM" }, { name: "robots", content: "noindex" }],
   }),
 });
 
@@ -63,7 +63,7 @@ function LoginPage() {
         </div>
         <Link to="/" className="relative z-10 flex items-center gap-2 text-2xl font-black tracking-tighter">
           <span className="text-primary">CARNE</span>
-          <span className="text-foreground">OS</span>
+          <span className="text-foreground">.CRM</span>
         </Link>
         <div className="relative z-10">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary">Terminal Restrito</p>
