@@ -16,7 +16,7 @@ type Product = {
   id: string;
   name: string;
   category: string | null;
-  unit: "kg" | "un" | "g" | "l";
+  unit: "kg" | "un";
   price_cents: number;
   cost_cents: number;
   stock_qty: number;
@@ -217,8 +217,6 @@ function ProductDialog({
             options={[
               { value: "kg", label: "kg" },
               { value: "un", label: "un" },
-              { value: "g", label: "g" },
-              { value: "l", label: "L" },
             ]}
           />
         </div>
