@@ -1,18 +1,19 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useAuth } from "@/lib/auth";
 
 const NAV = [
   { n: "01", to: "/dashboard", label: "Monitoramento" },
-  { n: "02", to: "/dashboard", label: "Desossa & Rendimento" },
-  { n: "03", to: "/dashboard", label: "Inventário Carcaça" },
-  { n: "04", to: "/dashboard", label: "Logística Fria" },
-  { n: "05", to: "/dashboard", label: "PDV Live" },
-  { n: "06", to: "/dashboard", label: "Financeiro" },
-  { n: "07", to: "/dashboard", label: "Rastreabilidade" },
-  { n: "08", to: "/dashboard", label: "Clientes / CRM" },
+  { n: "02", to: "/pdv", label: "PDV / Novo Pedido" },
+  { n: "03", to: "/products", label: "Produtos / Cortes" },
+  { n: "04", to: "/inventory", label: "Estoque & Movimentos" },
+  { n: "05", to: "/customers", label: "Clientes" },
+  { n: "06", to: "/sales", label: "Vendas" },
 ] as const;
 
 export function DashboardSidebar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const { company, user, signOut } = useAuth();
+
   return (
     <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-background lg:flex">
       <div className="border-b border-border p-6">
@@ -20,26 +21,24 @@ export function DashboardSidebar() {
           <span className="text-primary">CARNE</span>
           <span className="text-foreground">OS</span>
         </Link>
-        <div className="font-mono text-[10px] uppercase text-muted-foreground">Filial Atual</div>
-        <button
-          type="button"
-          className="mt-1 flex w-full items-center justify-between text-left text-sm font-bold uppercase tracking-tighter hover:text-primary"
-        >
-          MATRIZ SÃO PAULO
-          <span className="text-primary">▼</span>
-        </button>
-        <div className="mt-1 font-mono text-[10px] text-muted-foreground">ID #WGY-092</div>
+        <div className="font-mono text-[10px] uppercase text-muted-foreground">Empresa</div>
+        <div className="mt-1 truncate text-sm font-bold uppercase tracking-tighter">
+          {company?.name ?? "—"}
+        </div>
+        <div className="mt-1 font-mono text-[10px] text-muted-foreground">
+          #{company?.slug?.slice(0, 18) ?? "—"}
+        </div>
       </div>
 
       <nav className="flex-1 space-y-1 overflow-y-auto p-4">
         <div className="mb-3 px-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
           Operacional
         </div>
-        {NAV.map((i, idx) => {
-          const active = idx === 0 && path === "/dashboard";
+        {NAV.map((i) => {
+          const active = path === i.to;
           return (
             <Link
-              key={i.n}
+              key={i.to}
               to={i.to}
               className={
                 active
@@ -47,11 +46,7 @@ export function DashboardSidebar() {
                   : "flex items-center gap-3 border-l-2 border-transparent p-3 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
               }
             >
-              <span
-                className={
-                  active ? "font-mono text-[10px] text-primary" : "font-mono text-[10px]"
-                }
-              >
+              <span className={active ? "font-mono text-[10px] text-primary" : "font-mono text-[10px]"}>
                 {i.n}
               </span>
               <span className="text-sm font-bold uppercase tracking-tighter">{i.label}</span>
@@ -61,20 +56,16 @@ export function DashboardSidebar() {
       </nav>
 
       <div className="border-t border-border p-4">
-        <div className="bg-surface-2 p-4">
-          <div className="mb-2 font-mono text-[10px] uppercase text-primary">Alerta de Validade</div>
-          <div className="text-xs leading-relaxed">
-            Picanha Wagyu A5 (3kg)
-            <br />
-            <span className="font-bold text-foreground underline">Vence em 48h</span>
-          </div>
+        <div className="mb-3 truncate font-mono text-[10px] uppercase text-muted-foreground">
+          {user?.email}
         </div>
-        <Link
-          to="/"
-          className="mt-4 block text-center font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary"
+        <button
+          type="button"
+          onClick={() => signOut()}
+          className="block w-full text-left font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary"
         >
           ← Sair do Terminal
-        </Link>
+        </button>
       </div>
     </aside>
   );
