@@ -7,7 +7,7 @@ import { formatBRL } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/sales")({
   component: SalesPage,
-  head: () => ({ meta: [{ title: "Vendas · CarneOS" }] }),
+  head: () => ({ meta: [{ title: "Vendas · Carne.CRM" }] }),
 });
 
 type Sale = {
