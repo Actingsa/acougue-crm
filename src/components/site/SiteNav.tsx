@@ -6,7 +6,7 @@ export function SiteNav() {
       <div className="flex items-center gap-10">
         <Link to="/" className="flex items-center gap-2 font-black tracking-tighter text-2xl">
           <span className="text-primary">CARNE</span>
-          <span className="text-foreground">.OS</span>
+          <span className="text-foreground">.CRM</span>
         </Link>
         <div className="hidden gap-6 font-mono text-xs uppercase tracking-widest text-muted-foreground md:flex">
           <a href="#operacoes" className="transition-colors hover:text-primary">Operações</a>
