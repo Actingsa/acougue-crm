@@ -98,7 +98,7 @@ function PdvPage() {
         _company_id: company.id,
         _client_uuid: crypto.randomUUID(),
         _terminal: "PDV-WEB",
-        _customer_id: null,
+        _customer_id: undefined as unknown as string,
         _pay_method: payMethod,
         _discount_cents: 0,
         _items: items,
