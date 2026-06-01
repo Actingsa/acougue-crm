@@ -142,9 +142,9 @@ export const adminUpdateLicense = createServerFn({ method: "POST" })
     z
       .object({
         companyId: z.string().uuid(),
-        plan: z.enum(["trial", "basic", "pro", "enterprise"]).optional(),
+        plan: z.enum(["trial", "starter", "pro", "enterprise"]).optional(),
         licenseStatus: z
-          .enum(["trial", "active", "suspended", "expired", "cancelled"])
+          .enum(["trial", "active", "inactive", "suspended"])
           .optional(),
         licenseSeats: z.number().int().min(1).max(500).optional(),
         licenseExpiresAt: z.string().datetime().nullable().optional(),
@@ -154,7 +154,14 @@ export const adminUpdateLicense = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertPlatformAdmin(context.userId);
-    const patch: Record<string, unknown> = {};
+    const patch: {
+      plan?: "trial" | "starter" | "pro" | "enterprise";
+      license_status?: "trial" | "active" | "inactive" | "suspended";
+      license_seats?: number;
+      license_expires_at?: string | null;
+      license_notes?: string | null;
+    } = {};
+
     if (data.plan !== undefined) patch.plan = data.plan;
     if (data.licenseStatus !== undefined) patch.license_status = data.licenseStatus;
     if (data.licenseSeats !== undefined) patch.license_seats = data.licenseSeats;
