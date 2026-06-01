@@ -31,7 +31,7 @@ export const teamCreateMember = createServerFn({ method: "POST" })
         email: z.string().email(),
         name: z.string().min(2).max(120),
         password: z.string().min(8).max(128),
-        role: z.enum(["owner", "admin", "manager", "cashier", "viewer"]),
+        role: z.enum(["owner", "admin", "manager", "cashier", "butcher"]),
       })
       .parse(d),
   )
@@ -104,7 +104,7 @@ export const teamUpdateRole = createServerFn({ method: "POST" })
       .object({
         companyId: z.string().uuid(),
         memberId: z.string().uuid(),
-        role: z.enum(["owner", "admin", "manager", "cashier", "viewer"]),
+        role: z.enum(["owner", "admin", "manager", "cashier", "butcher"]),
       })
       .parse(d),
   )
