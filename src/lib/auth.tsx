@@ -123,6 +123,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         loading,
         company,
+        isPlatformAdmin,
+
         refreshCompany: () => loadCompany(user),
         signOut: async () => {
           await supabase.auth.signOut();
