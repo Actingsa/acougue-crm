@@ -9,11 +9,13 @@ type AuthState = {
   session: Session | null;
   loading: boolean;
   company: Company | null;
+  isPlatformAdmin: boolean;
   refreshCompany: () => Promise<void>;
   signOut: () => Promise<void>;
 };
 
 const AuthCtx = createContext<AuthState | null>(null);
+
 
 async function ensureCompany(user: User): Promise<Company | null> {
   // Try find any membership
