@@ -84,8 +84,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .eq("user_id", u.id)
       .maybeSingle();
     setIsPlatformAdmin(!!pa);
+    // Try to find an existing membership first; only bootstrap a company
+    // for non-platform-admins (superadmins manage companies themselves).
+    const { data: members } = await supabase
+      .from("company_members")
+      .select("company_id, companies:company_id ( id, name, slug )")
+      .eq("user_id", u.id)
+      .limit(1);
+    const existing = members?.[0]?.companies as Company | undefined;
+    if (existing) {
+      setCompany(existing);
+      return;
+    }
+    if (pa) {
+      setCompany(null);
+      return;
+    }
     const c = await ensureCompany(u);
     setCompany(c);
+
   };
 
 
