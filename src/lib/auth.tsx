@@ -69,16 +69,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [company, setCompany] = useState<Company | null>(null);
+  const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const loadCompany = async (u: User | null) => {
     if (!u) {
       setCompany(null);
+      setIsPlatformAdmin(false);
       return;
     }
+    const { data: pa } = await supabase
+      .from("platform_admins")
+      .select("user_id")
+      .eq("user_id", u.id)
+      .maybeSingle();
+    setIsPlatformAdmin(!!pa);
     const c = await ensureCompany(u);
     setCompany(c);
   };
+
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
