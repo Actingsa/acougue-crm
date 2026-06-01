@@ -147,9 +147,21 @@ export const teamListMembers = createServerFn({ method: "GET" })
     await assertCompanyAdmin(context.userId, data.companyId);
     const { data: members, error } = await supabaseAdmin
       .from("company_members")
-      .select("id, user_id, role, created_at, profiles:user_id ( email, full_name )")
+      .select("id, user_id, role, created_at")
       .eq("company_id", data.companyId)
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);
-    return { members: members ?? [] };
+    const ids = (members ?? []).map((m) => m.user_id);
+    const { data: profiles } = ids.length
+      ? await supabaseAdmin.from("profiles").select("id, email, full_name").in("id", ids)
+      : { data: [] as { id: string; email: string | null; full_name: string | null }[] };
+    const map = new Map((profiles ?? []).map((p) => [p.id, p]));
+    return {
+      members: (members ?? []).map((m) => ({
+        ...m,
+        email: map.get(m.user_id)?.email ?? null,
+        full_name: map.get(m.user_id)?.full_name ?? null,
+      })),
+    };
   });
+
