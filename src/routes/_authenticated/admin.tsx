@@ -34,7 +34,7 @@ function AdminPage() {
   const { data } = useQuery({
     queryKey: ["admin-companies"],
     enabled: isPlatformAdmin,
-    queryFn: () => listFn(),
+    queryFn: () => listFn({}),
   });
 
   const update = useMutation({
