@@ -37,9 +37,17 @@ function AdminPage() {
     queryFn: () => listFn(),
   });
 
+  type UpdateArgs = {
+    companyId: string;
+    plan?: Plan;
+    licenseStatus?: LicenseStatus;
+    licenseSeats?: number;
+    licenseExpiresAt?: string | null;
+    licenseNotes?: string | null;
+  };
   const update = useMutation({
-    mutationFn: (args: Parameters<typeof updateFn>[0]["data"]) =>
-      updateFn({ data: args }),
+    mutationFn: (args: UpdateArgs) => updateFn({ data: args }),
+
     onSuccess: () => {
       toast.success("Licença atualizada");
       qc.invalidateQueries({ queryKey: ["admin-companies"] });
