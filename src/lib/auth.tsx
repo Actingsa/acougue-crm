@@ -9,11 +9,13 @@ type AuthState = {
   session: Session | null;
   loading: boolean;
   company: Company | null;
+  isPlatformAdmin: boolean;
   refreshCompany: () => Promise<void>;
   signOut: () => Promise<void>;
 };
 
 const AuthCtx = createContext<AuthState | null>(null);
+
 
 async function ensureCompany(user: User): Promise<Company | null> {
   // Try find any membership
@@ -67,16 +69,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [company, setCompany] = useState<Company | null>(null);
+  const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const loadCompany = async (u: User | null) => {
     if (!u) {
       setCompany(null);
+      setIsPlatformAdmin(false);
+      return;
+    }
+    const { data: pa } = await supabase
+      .from("platform_admins")
+      .select("user_id")
+      .eq("user_id", u.id)
+      .maybeSingle();
+    setIsPlatformAdmin(!!pa);
+    // Try to find an existing membership first; only bootstrap a company
+    // for non-platform-admins (superadmins manage companies themselves).
+    const { data: members } = await supabase
+      .from("company_members")
+      .select("company_id, companies:company_id ( id, name, slug )")
+      .eq("user_id", u.id)
+      .limit(1);
+    const existing = members?.[0]?.companies as Company | undefined;
+    if (existing) {
+      setCompany(existing);
+      return;
+    }
+    if (pa) {
+      setCompany(null);
       return;
     }
     const c = await ensureCompany(u);
     setCompany(c);
+
   };
+
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
@@ -112,6 +140,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         loading,
         company,
+        isPlatformAdmin,
+
         refreshCompany: () => loadCompany(user),
         signOut: async () => {
           await supabase.auth.signOut();

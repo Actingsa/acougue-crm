@@ -8,11 +8,13 @@ const NAV = [
   { n: "04", to: "/inventory", label: "Estoque & Movimentos" },
   { n: "05", to: "/customers", label: "Clientes" },
   { n: "06", to: "/sales", label: "Vendas" },
+  { n: "07", to: "/team", label: "Equipe & Permissões" },
 ] as const;
 
 export function DashboardSidebar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
-  const { company, user, signOut } = useAuth();
+  const { company, user, signOut, isPlatformAdmin } = useAuth();
+
 
   return (
     <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-background lg:flex">
@@ -53,7 +55,29 @@ export function DashboardSidebar() {
             </Link>
           );
         })}
+
+        {isPlatformAdmin && (
+          <>
+            <div className="mt-6 mb-3 px-3 font-mono text-[10px] uppercase tracking-widest text-primary">
+              Superadmin
+            </div>
+            <Link
+              to="/admin"
+              className={
+                path === "/admin"
+                  ? "flex items-center gap-3 border-l-2 border-primary bg-primary/10 p-3"
+                  : "flex items-center gap-3 border-l-2 border-transparent p-3 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+              }
+            >
+              <span className="font-mono text-[10px] text-primary">★</span>
+              <span className="text-sm font-bold uppercase tracking-tighter">
+                Empresas & Licenças
+              </span>
+            </Link>
+          </>
+        )}
       </nav>
+
 
       <div className="border-t border-border p-4">
         <div className="mb-3 truncate font-mono text-[10px] uppercase text-muted-foreground">
