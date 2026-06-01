@@ -51,15 +51,16 @@ export const adminCreateCompany = createServerFn({ method: "POST" })
       .object({
         companyName: z.string().min(2).max(120),
         cnpj: z.string().max(20).optional().nullable(),
-        plan: z.enum(["trial", "basic", "pro", "enterprise"]).default("trial"),
+        plan: z.enum(["trial", "starter", "pro", "enterprise"]).default("trial"),
         licenseStatus: z
-          .enum(["trial", "active", "suspended", "expired", "cancelled"])
+          .enum(["trial", "active", "inactive", "suspended"])
           .default("trial"),
         licenseSeats: z.number().int().min(1).max(500).default(5),
         licenseExpiresAt: z.string().datetime().optional().nullable(),
         ownerEmail: z.string().email(),
         ownerName: z.string().min(2).max(120),
         ownerPassword: z.string().min(8).max(128),
+
       })
       .parse(d),
   )
