@@ -269,6 +269,117 @@ export type Database = {
         }
         Relationships: []
       }
+      hardware_settings: {
+        Row: {
+          barcode_enabled: boolean
+          barcode_max_length: number
+          barcode_min_length: number
+          barcode_mode: string
+          barcode_prefix: string
+          barcode_serial_baud: number | null
+          barcode_serial_port: string | null
+          barcode_suffix: string
+          barcode_weight_pattern: string | null
+          company_id: string
+          created_at: string
+          id: string
+          nfce_csc_id: string | null
+          nfce_csc_token: string | null
+          nfce_enabled: boolean
+          nfce_environment: string | null
+          printer_auto_cut: boolean
+          printer_brand: string
+          printer_cash_drawer: boolean
+          printer_connection: string
+          printer_copies: number
+          printer_enabled: boolean
+          printer_footer: string | null
+          printer_header: string | null
+          printer_ip: string | null
+          printer_model: string | null
+          printer_paper_width: number
+          printer_port: number | null
+          printer_serial_baud: number | null
+          printer_serial_port: string | null
+          sat_activation_code: string | null
+          sat_cnpj: string | null
+          sat_enabled: boolean
+          updated_at: string
+        }
+        Insert: {
+          barcode_enabled?: boolean
+          barcode_max_length?: number
+          barcode_min_length?: number
+          barcode_mode?: string
+          barcode_prefix?: string
+          barcode_serial_baud?: number | null
+          barcode_serial_port?: string | null
+          barcode_suffix?: string
+          barcode_weight_pattern?: string | null
+          company_id: string
+          created_at?: string
+          id?: string
+          nfce_csc_id?: string | null
+          nfce_csc_token?: string | null
+          nfce_enabled?: boolean
+          nfce_environment?: string | null
+          printer_auto_cut?: boolean
+          printer_brand?: string
+          printer_cash_drawer?: boolean
+          printer_connection?: string
+          printer_copies?: number
+          printer_enabled?: boolean
+          printer_footer?: string | null
+          printer_header?: string | null
+          printer_ip?: string | null
+          printer_model?: string | null
+          printer_paper_width?: number
+          printer_port?: number | null
+          printer_serial_baud?: number | null
+          printer_serial_port?: string | null
+          sat_activation_code?: string | null
+          sat_cnpj?: string | null
+          sat_enabled?: boolean
+          updated_at?: string
+        }
+        Update: {
+          barcode_enabled?: boolean
+          barcode_max_length?: number
+          barcode_min_length?: number
+          barcode_mode?: string
+          barcode_prefix?: string
+          barcode_serial_baud?: number | null
+          barcode_serial_port?: string | null
+          barcode_suffix?: string
+          barcode_weight_pattern?: string | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          nfce_csc_id?: string | null
+          nfce_csc_token?: string | null
+          nfce_enabled?: boolean
+          nfce_environment?: string | null
+          printer_auto_cut?: boolean
+          printer_brand?: string
+          printer_cash_drawer?: boolean
+          printer_connection?: string
+          printer_copies?: number
+          printer_enabled?: boolean
+          printer_footer?: string | null
+          printer_header?: string | null
+          printer_ip?: string | null
+          printer_model?: string | null
+          printer_paper_width?: number
+          printer_port?: number | null
+          printer_serial_baud?: number | null
+          printer_serial_port?: string | null
+          sat_activation_code?: string | null
+          sat_cnpj?: string | null
+          sat_enabled?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       platform_admins: {
         Row: {
           created_at: string
