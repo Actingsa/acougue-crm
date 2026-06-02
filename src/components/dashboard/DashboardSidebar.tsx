@@ -9,6 +9,7 @@ const NAV = [
   { n: "05", to: "/customers", label: "Clientes" },
   { n: "06", to: "/sales", label: "Vendas" },
   { n: "07", to: "/team", label: "Equipe & Permissões" },
+  { n: "08", to: "/hardware", label: "Hardware & Periféricos" },
 ] as const;
 
 export function DashboardSidebar() {
