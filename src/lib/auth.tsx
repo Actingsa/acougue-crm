@@ -17,18 +17,35 @@ type AuthState = {
 const AuthCtx = createContext<AuthState | null>(null);
 
 
-async function ensureCompany(user: User): Promise<Company | null> {
-  // Try find any membership
-  const { data: members } = await supabase
+async function fetchFirstCompany(userId: string): Promise<Company | null> {
+  // Two-step query (no PostgREST embed) — there is no FK between
+  // company_members.company_id and companies.id, so embeds return null
+  // and would cause masters to be re-bootstrapped into a brand-new company.
+  const { data: members, error: mErr } = await supabase
     .from("company_members")
-    .select("company_id, companies:company_id ( id, name, slug )")
-    .eq("user_id", user.id)
+    .select("company_id, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: true })
     .limit(1);
+  if (mErr) {
+    console.error("[auth] failed to load memberships", mErr);
+    return null;
+  }
+  const companyId = members?.[0]?.company_id;
+  if (!companyId) return null;
+  const { data: company, error: cErr } = await supabase
+    .from("companies")
+    .select("id, name, slug")
+    .eq("id", companyId)
+    .maybeSingle();
+  if (cErr) {
+    console.error("[auth] failed to load company", cErr);
+    return null;
+  }
+  return (company as Company | null) ?? null;
+}
 
-  const existing = members?.[0]?.companies as Company | undefined;
-  if (existing) return existing;
-
-  // Bootstrap: create a default company + owner membership
+async function bootstrapCompany(user: User): Promise<Company | null> {
   const defaultName =
     (user.user_metadata?.company_name as string) ||
     (user.user_metadata?.full_name as string) ||
@@ -83,26 +100,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .select("user_id")
       .eq("user_id", u.id)
       .maybeSingle();
-    setIsPlatformAdmin(!!pa);
-    // Try to find an existing membership first; only bootstrap a company
-    // for non-platform-admins (superadmins manage companies themselves).
-    const { data: members } = await supabase
-      .from("company_members")
-      .select("company_id, companies:company_id ( id, name, slug )")
-      .eq("user_id", u.id)
-      .limit(1);
-    const existing = members?.[0]?.companies as Company | undefined;
+    const isAdmin = !!pa;
+    setIsPlatformAdmin(isAdmin);
+
+    // Always look for an existing membership first (works for masters
+    // provisioned by the superadmin and for regular users alike).
+    const existing = await fetchFirstCompany(u.id);
     if (existing) {
       setCompany(existing);
       return;
     }
-    if (pa) {
+    // Superadmins don't need a company of their own.
+    if (isAdmin) {
       setCompany(null);
       return;
     }
-    const c = await ensureCompany(u);
+    // Only auto-bootstrap a company for brand-new self-signup users.
+    const c = await bootstrapCompany(u);
     setCompany(c);
-
   };
 
 
