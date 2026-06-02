@@ -17,6 +17,7 @@ import { Route as AuthenticatedSalesRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
 import { Route as AuthenticatedPdvRouteImport } from './routes/_authenticated/pdv'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
+import { Route as AuthenticatedHardwareRouteImport } from './routes/_authenticated/hardware'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -60,6 +61,11 @@ const AuthenticatedInventoryRoute = AuthenticatedInventoryRouteImport.update({
   path: '/inventory',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedHardwareRoute = AuthenticatedHardwareRouteImport.update({
+  id: '/hardware',
+  path: '/hardware',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/hardware': typeof AuthenticatedHardwareRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/pdv': typeof AuthenticatedPdvRoute
   '/products': typeof AuthenticatedProductsRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/hardware': typeof AuthenticatedHardwareRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/pdv': typeof AuthenticatedPdvRoute
   '/products': typeof AuthenticatedProductsRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/hardware': typeof AuthenticatedHardwareRoute
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/pdv': typeof AuthenticatedPdvRoute
   '/_authenticated/products': typeof AuthenticatedProductsRoute
@@ -122,6 +131,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/customers'
     | '/dashboard'
+    | '/hardware'
     | '/inventory'
     | '/pdv'
     | '/products'
@@ -134,6 +144,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/customers'
     | '/dashboard'
+    | '/hardware'
     | '/inventory'
     | '/pdv'
     | '/products'
@@ -147,6 +158,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/customers'
     | '/_authenticated/dashboard'
+    | '/_authenticated/hardware'
     | '/_authenticated/inventory'
     | '/_authenticated/pdv'
     | '/_authenticated/products'
@@ -218,6 +230,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInventoryRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/hardware': {
+      id: '/_authenticated/hardware'
+      path: '/hardware'
+      fullPath: '/hardware'
+      preLoaderRoute: typeof AuthenticatedHardwareRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -246,6 +265,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedHardwareRoute: typeof AuthenticatedHardwareRoute
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
   AuthenticatedPdvRoute: typeof AuthenticatedPdvRoute
   AuthenticatedProductsRoute: typeof AuthenticatedProductsRoute
@@ -257,6 +277,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedHardwareRoute: AuthenticatedHardwareRoute,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
   AuthenticatedPdvRoute: AuthenticatedPdvRoute,
   AuthenticatedProductsRoute: AuthenticatedProductsRoute,
