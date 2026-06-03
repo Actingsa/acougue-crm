@@ -5,11 +5,12 @@ const NAV = [
   { n: "01", to: "/dashboard", label: "Monitoramento" },
   { n: "02", to: "/pdv", label: "PDV / Novo Pedido" },
   { n: "03", to: "/products", label: "Produtos / Cortes" },
-  { n: "04", to: "/inventory", label: "Estoque & Movimentos" },
+  { n: "04", to: "/inventory", label: "Estoque & Entradas" },
   { n: "05", to: "/customers", label: "Clientes" },
   { n: "06", to: "/sales", label: "Vendas" },
   { n: "07", to: "/team", label: "Equipe & Permissões" },
   { n: "08", to: "/hardware", label: "Hardware & Periféricos" },
+  { n: "09", to: "/company", label: "Empresa & Logomarca" },
 ] as const;
 
 export function DashboardSidebar() {
