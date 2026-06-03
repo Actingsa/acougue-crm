@@ -60,46 +60,97 @@ export type Database = {
       }
       companies: {
         Row: {
+          address_city: string | null
+          address_complement: string | null
+          address_district: string | null
+          address_number: string | null
+          address_state: string | null
+          address_street: string | null
+          address_zip: string | null
           cnpj: string | null
           created_at: string
           created_by: string
+          email: string | null
           id: string
+          ie: string | null
+          im: string | null
+          legal_name: string | null
           license_expires_at: string | null
           license_notes: string | null
           license_seats: number
           license_status: Database["public"]["Enums"]["license_status"]
+          logo_url: string | null
           name: string
+          phone: string | null
           plan: Database["public"]["Enums"]["company_plan"]
+          report_footer: string | null
           slug: string
+          tax_regime: string | null
+          trade_name: string | null
           updated_at: string
+          website: string | null
         }
         Insert: {
+          address_city?: string | null
+          address_complement?: string | null
+          address_district?: string | null
+          address_number?: string | null
+          address_state?: string | null
+          address_street?: string | null
+          address_zip?: string | null
           cnpj?: string | null
           created_at?: string
           created_by: string
+          email?: string | null
           id?: string
+          ie?: string | null
+          im?: string | null
+          legal_name?: string | null
           license_expires_at?: string | null
           license_notes?: string | null
           license_seats?: number
           license_status?: Database["public"]["Enums"]["license_status"]
+          logo_url?: string | null
           name: string
+          phone?: string | null
           plan?: Database["public"]["Enums"]["company_plan"]
+          report_footer?: string | null
           slug: string
+          tax_regime?: string | null
+          trade_name?: string | null
           updated_at?: string
+          website?: string | null
         }
         Update: {
+          address_city?: string | null
+          address_complement?: string | null
+          address_district?: string | null
+          address_number?: string | null
+          address_state?: string | null
+          address_street?: string | null
+          address_zip?: string | null
           cnpj?: string | null
           created_at?: string
           created_by?: string
+          email?: string | null
           id?: string
+          ie?: string | null
+          im?: string | null
+          legal_name?: string | null
           license_expires_at?: string | null
           license_notes?: string | null
           license_seats?: number
           license_status?: Database["public"]["Enums"]["license_status"]
+          logo_url?: string | null
           name?: string
+          phone?: string | null
           plan?: Database["public"]["Enums"]["company_plan"]
+          report_footer?: string | null
           slug?: string
+          tax_regime?: string | null
+          trade_name?: string | null
           updated_at?: string
+          website?: string | null
         }
         Relationships: []
       }
@@ -504,6 +555,113 @@ export type Database = {
           },
         ]
       }
+      purchase_invoice_items: {
+        Row: {
+          company_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          invoice_id: string
+          lot: string | null
+          name_snapshot: string
+          product_id: string | null
+          qty: number
+          total_cents: number
+          unit: Database["public"]["Enums"]["product_unit"]
+          unit_cost_cents: number
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          invoice_id: string
+          lot?: string | null
+          name_snapshot: string
+          product_id?: string | null
+          qty: number
+          total_cents?: number
+          unit?: Database["public"]["Enums"]["product_unit"]
+          unit_cost_cents?: number
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          invoice_id?: string
+          lot?: string | null
+          name_snapshot?: string
+          product_id?: string | null
+          qty?: number
+          total_cents?: number
+          unit?: Database["public"]["Enums"]["product_unit"]
+          unit_cost_cents?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_invoices: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string
+          doc_key: string | null
+          doc_number: string | null
+          doc_series: string | null
+          doc_type: Database["public"]["Enums"]["purchase_doc_type"]
+          id: string
+          issued_at: string | null
+          notes: string | null
+          received_at: string
+          supplier_doc: string | null
+          supplier_name: string | null
+          total_cents: number
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by: string
+          doc_key?: string | null
+          doc_number?: string | null
+          doc_series?: string | null
+          doc_type?: Database["public"]["Enums"]["purchase_doc_type"]
+          id?: string
+          issued_at?: string | null
+          notes?: string | null
+          received_at?: string
+          supplier_doc?: string | null
+          supplier_name?: string | null
+          total_cents?: number
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string
+          doc_key?: string | null
+          doc_number?: string | null
+          doc_series?: string | null
+          doc_type?: Database["public"]["Enums"]["purchase_doc_type"]
+          id?: string
+          issued_at?: string | null
+          notes?: string | null
+          received_at?: string
+          supplier_doc?: string | null
+          supplier_name?: string | null
+          total_cents?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sale_items: {
         Row: {
           company_id: string
@@ -776,6 +934,21 @@ export type Database = {
           read_ct: number
         }[]
       }
+      register_purchase: {
+        Args: {
+          _company_id: string
+          _doc_key: string
+          _doc_number: string
+          _doc_series: string
+          _doc_type: Database["public"]["Enums"]["purchase_doc_type"]
+          _issued_at: string
+          _items: Json
+          _notes: string
+          _supplier_doc: string
+          _supplier_name: string
+        }
+        Returns: string
+      }
       register_sale: {
         Args: {
           _client_uuid: string
@@ -796,6 +969,7 @@ export type Database = {
       license_status: "trial" | "active" | "inactive" | "suspended"
       pay_method: "cash" | "debit" | "credit" | "pix" | "voucher"
       product_unit: "kg" | "un"
+      purchase_doc_type: "nfe" | "nfce" | "cupom" | "non_fiscal"
       sale_status: "open" | "paid" | "cancelled"
       stock_kind: "in" | "out" | "loss" | "adjust" | "butcher"
     }
@@ -931,6 +1105,7 @@ export const Constants = {
       license_status: ["trial", "active", "inactive", "suspended"],
       pay_method: ["cash", "debit", "credit", "pix", "voucher"],
       product_unit: ["kg", "un"],
+      purchase_doc_type: ["nfe", "nfce", "cupom", "non_fiscal"],
       sale_status: ["open", "paid", "cancelled"],
       stock_kind: ["in", "out", "loss", "adjust", "butcher"],
     },
