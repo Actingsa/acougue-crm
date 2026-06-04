@@ -934,37 +934,21 @@ export type Database = {
           read_ct: number
         }[]
       }
-      register_purchase:
-        | {
-            Args: {
-              _company_id: string
-              _doc_key: string
-              _doc_number: string
-              _doc_series: string
-              _doc_type: Database["public"]["Enums"]["purchase_doc_type"]
-              _issued_at: string
-              _items: Json
-              _notes: string
-              _supplier_doc: string
-              _supplier_name: string
-            }
-            Returns: string
-          }
-        | {
-            Args: {
-              _company_id: string
-              _doc_key: string
-              _doc_number: string
-              _doc_series: string
-              _doc_type: Database["public"]["Enums"]["purchase_doc_type"]
-              _issued_at: string
-              _items: Json
-              _notes: string
-              _supplier_doc: string
-              _supplier_name: string
-            }
-            Returns: string
-          }
+      register_purchase: {
+        Args: {
+          _company_id: string
+          _doc_key: string
+          _doc_number: string
+          _doc_series: string
+          _doc_type: Database["public"]["Enums"]["purchase_doc_type"]
+          _issued_at: string
+          _items: Json
+          _notes: string
+          _supplier_doc: string
+          _supplier_name: string
+        }
+        Returns: string
+      }
       register_sale: {
         Args: {
           _client_uuid: string
