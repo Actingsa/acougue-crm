@@ -156,11 +156,11 @@ function DeboningPage() {
 
       const { error } = await supabase.rpc("register_deboning", {
         _company_id: company.id,
-        _carcass_product_id: carcassId || null,
+        _carcass_product_id: (carcassId || null) as unknown as string,
         _carcass_name: carcassName,
         _carcass_qty: totals.carcass,
         _carcass_unit: "kg",
-        _expected_yield_pct: totals.expected || null,
+        _expected_yield_pct: (totals.expected || null) as unknown as number,
         _notes: notes,
         _outputs: validOutputs as never,
       });
