@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.register_purchase(uuid, public.purchase_doc_type, text, text, text, text, text, date, text, jsonb);
