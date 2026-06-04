@@ -18,6 +18,7 @@ import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedPdvRouteImport } from './routes/_authenticated/pdv'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
 import { Route as AuthenticatedHardwareRouteImport } from './routes/_authenticated/hardware'
+import { Route as AuthenticatedDeboningRouteImport } from './routes/_authenticated/deboning'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
 import { Route as AuthenticatedCompanyRouteImport } from './routes/_authenticated/company'
@@ -67,6 +68,11 @@ const AuthenticatedHardwareRoute = AuthenticatedHardwareRouteImport.update({
   path: '/hardware',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedDeboningRoute = AuthenticatedDeboningRouteImport.update({
+  id: '/deboning',
+  path: '/deboning',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/company': typeof AuthenticatedCompanyRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/deboning': typeof AuthenticatedDeboningRoute
   '/hardware': typeof AuthenticatedHardwareRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/pdv': typeof AuthenticatedPdvRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/company': typeof AuthenticatedCompanyRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/deboning': typeof AuthenticatedDeboningRoute
   '/hardware': typeof AuthenticatedHardwareRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/pdv': typeof AuthenticatedPdvRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/_authenticated/company': typeof AuthenticatedCompanyRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/deboning': typeof AuthenticatedDeboningRoute
   '/_authenticated/hardware': typeof AuthenticatedHardwareRoute
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/pdv': typeof AuthenticatedPdvRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/company'
     | '/customers'
     | '/dashboard'
+    | '/deboning'
     | '/hardware'
     | '/inventory'
     | '/pdv'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
     | '/company'
     | '/customers'
     | '/dashboard'
+    | '/deboning'
     | '/hardware'
     | '/inventory'
     | '/pdv'
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '/_authenticated/company'
     | '/_authenticated/customers'
     | '/_authenticated/dashboard'
+    | '/_authenticated/deboning'
     | '/_authenticated/hardware'
     | '/_authenticated/inventory'
     | '/_authenticated/pdv'
@@ -249,6 +261,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHardwareRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/deboning': {
+      id: '/_authenticated/deboning'
+      path: '/deboning'
+      fullPath: '/deboning'
+      preLoaderRoute: typeof AuthenticatedDeboningRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -285,6 +304,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCompanyRoute: typeof AuthenticatedCompanyRoute
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDeboningRoute: typeof AuthenticatedDeboningRoute
   AuthenticatedHardwareRoute: typeof AuthenticatedHardwareRoute
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
   AuthenticatedPdvRoute: typeof AuthenticatedPdvRoute
@@ -298,6 +318,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCompanyRoute: AuthenticatedCompanyRoute,
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDeboningRoute: AuthenticatedDeboningRoute,
   AuthenticatedHardwareRoute: AuthenticatedHardwareRoute,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
   AuthenticatedPdvRoute: AuthenticatedPdvRoute,

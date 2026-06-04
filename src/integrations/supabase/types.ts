@@ -233,6 +233,110 @@ export type Database = {
           },
         ]
       }
+      deboning_outputs: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["deboning_output_kind"]
+          name_snapshot: string
+          product_id: string | null
+          qty_expected: number | null
+          qty_real: number
+          session_id: string
+          unit: Database["public"]["Enums"]["product_unit"]
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["deboning_output_kind"]
+          name_snapshot: string
+          product_id?: string | null
+          qty_expected?: number | null
+          qty_real?: number
+          session_id: string
+          unit?: Database["public"]["Enums"]["product_unit"]
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["deboning_output_kind"]
+          name_snapshot?: string
+          product_id?: string | null
+          qty_expected?: number | null
+          qty_real?: number
+          session_id?: string
+          unit?: Database["public"]["Enums"]["product_unit"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deboning_outputs_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "deboning_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deboning_sessions: {
+        Row: {
+          carcass_name: string
+          carcass_product_id: string | null
+          carcass_qty: number
+          carcass_unit: Database["public"]["Enums"]["product_unit"]
+          company_id: string
+          created_at: string
+          created_by: string
+          expected_yield_pct: number | null
+          id: string
+          notes: string | null
+          output_bone_qty: number
+          output_cut_qty: number
+          output_fat_qty: number
+          output_loss_qty: number
+          real_yield_pct: number
+          updated_at: string
+        }
+        Insert: {
+          carcass_name: string
+          carcass_product_id?: string | null
+          carcass_qty: number
+          carcass_unit?: Database["public"]["Enums"]["product_unit"]
+          company_id: string
+          created_at?: string
+          created_by: string
+          expected_yield_pct?: number | null
+          id?: string
+          notes?: string | null
+          output_bone_qty?: number
+          output_cut_qty?: number
+          output_fat_qty?: number
+          output_loss_qty?: number
+          real_yield_pct?: number
+          updated_at?: string
+        }
+        Update: {
+          carcass_name?: string
+          carcass_product_id?: string | null
+          carcass_qty?: number
+          carcass_unit?: Database["public"]["Enums"]["product_unit"]
+          company_id?: string
+          created_at?: string
+          created_by?: string
+          expected_yield_pct?: number | null
+          id?: string
+          notes?: string | null
+          output_bone_qty?: number
+          output_cut_qty?: number
+          output_fat_qty?: number
+          output_loss_qty?: number
+          real_yield_pct?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
@@ -934,6 +1038,19 @@ export type Database = {
           read_ct: number
         }[]
       }
+      register_deboning: {
+        Args: {
+          _carcass_name: string
+          _carcass_product_id: string
+          _carcass_qty: number
+          _carcass_unit: Database["public"]["Enums"]["product_unit"]
+          _company_id: string
+          _expected_yield_pct: number
+          _notes: string
+          _outputs: Json
+        }
+        Returns: string
+      }
       register_purchase: {
         Args: {
           _company_id: string
@@ -966,6 +1083,7 @@ export type Database = {
       app_role: "owner" | "admin" | "manager" | "butcher" | "cashier"
       cash_status: "open" | "closed"
       company_plan: "trial" | "starter" | "pro" | "enterprise"
+      deboning_output_kind: "cut" | "fat" | "bone" | "loss"
       license_status: "trial" | "active" | "inactive" | "suspended"
       pay_method: "cash" | "debit" | "credit" | "pix" | "voucher"
       product_unit: "kg" | "un"
@@ -1102,6 +1220,7 @@ export const Constants = {
       app_role: ["owner", "admin", "manager", "butcher", "cashier"],
       cash_status: ["open", "closed"],
       company_plan: ["trial", "starter", "pro", "enterprise"],
+      deboning_output_kind: ["cut", "fat", "bone", "loss"],
       license_status: ["trial", "active", "inactive", "suspended"],
       pay_method: ["cash", "debit", "credit", "pix", "voucher"],
       product_unit: ["kg", "un"],
