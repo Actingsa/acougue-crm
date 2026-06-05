@@ -178,13 +178,24 @@ function PdvPage() {
       <main className="flex flex-1 overflow-hidden">
         {/* Catalog */}
         <section className="flex flex-1 flex-col overflow-hidden border-r border-border">
-          <div className="border-b border-border bg-surface-2 p-4">
+          <div className="space-y-2 border-b border-border bg-surface-2 p-4">
+            <form onSubmit={handleCodeSubmit}>
+              <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest text-primary">
+                Código / Leitor de barras / Balança
+              </label>
+              <input
+                autoFocus
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="Bipe o EAN-13, digite PLU ou SKU e tecle Enter…"
+                className="w-full border border-primary/40 bg-background px-4 py-3 font-mono text-sm outline-none focus:border-primary"
+              />
+            </form>
             <input
-              autoFocus
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar corte ou produto…"
-              className="w-full border border-border bg-surface px-4 py-3 text-sm outline-none focus:border-primary"
+              placeholder="Buscar corte ou produto pelo nome…"
+              className="w-full border border-border bg-surface px-4 py-2 text-sm outline-none focus:border-primary"
             />
           </div>
           <div className="grid flex-1 grid-cols-2 content-start gap-3 overflow-y-auto p-4 md:grid-cols-3 xl:grid-cols-4">
