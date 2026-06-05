@@ -18,6 +18,13 @@ type Product = {
   unit: "kg" | "un" | "g" | "l";
   price_cents: number;
   stock_qty: number;
+  sku: string | null;
+  barcode: string | null;
+  plu_code: string | null;
+  is_weighable: boolean;
+  scale_prefix: string | null;
+  tare_grams: number;
+  package_grams: number | null;
 };
 
 type CartItem = {
@@ -33,6 +40,7 @@ function PdvPage() {
   const qc = useQueryClient();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [search, setSearch] = useState("");
+  const [code, setCode] = useState("");
   const [payMethod, setPayMethod] = useState<"cash" | "credit" | "debit" | "pix">("pix");
 
   const { data: products = [] } = useQuery({
