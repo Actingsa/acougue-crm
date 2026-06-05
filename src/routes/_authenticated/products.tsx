@@ -246,7 +246,15 @@ function ProductDialog({
         </h2>
         <Input label="Nome" value={name} onChange={setName} required autoFocus />
         <div className="grid grid-cols-2 gap-3">
-          <Input label="Categoria" value={category} onChange={setCategory} />
+          <Select
+            label="Categoria"
+            value={category}
+            onChange={setCategory}
+            options={[
+              { value: "", label: "— Selecionar —" },
+              ...categories.map((c) => ({ value: c.name, label: c.name })),
+            ]}
+          />
           <Select
             label="Unidade"
             value={unit}
