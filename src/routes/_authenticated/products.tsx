@@ -166,6 +166,20 @@ function ProductDialog({
   const [name, setName] = useState(product?.name ?? "");
   const [category, setCategory] = useState(product?.category ?? "");
   const [unit, setUnit] = useState<Product["unit"]>(product?.unit ?? "kg");
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ["product_categories", company?.id],
+    enabled: !!company?.id,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("product_categories")
+        .select("name")
+        .eq("company_id", company!.id)
+        .order("name", { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as { name: string }[];
+    },
+  });
   const [price, setPrice] = useState(product ? formatBRL(product.price_cents) : "");
   const [cost, setCost] = useState(product ? formatBRL(product.cost_cents) : "");
   const [stock, setStock] = useState(product ? String(product.stock_qty) : "0");
@@ -232,7 +246,15 @@ function ProductDialog({
         </h2>
         <Input label="Nome" value={name} onChange={setName} required autoFocus />
         <div className="grid grid-cols-2 gap-3">
-          <Input label="Categoria" value={category} onChange={setCategory} />
+          <Select
+            label="Categoria"
+            value={category}
+            onChange={setCategory}
+            options={[
+              { value: "", label: "— Selecionar —" },
+              ...categories.map((c) => ({ value: c.name, label: c.name })),
+            ]}
+          />
           <Select
             label="Unidade"
             value={unit}
