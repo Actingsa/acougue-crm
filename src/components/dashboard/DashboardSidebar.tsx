@@ -5,13 +5,14 @@ const NAV = [
   { n: "01", to: "/dashboard", label: "Monitoramento" },
   { n: "02", to: "/pdv", label: "PDV / Novo Pedido" },
   { n: "03", to: "/products", label: "Produtos / Cortes" },
-  { n: "04", to: "/inventory", label: "Estoque & Entradas" },
-  { n: "05", to: "/customers", label: "Clientes" },
-  { n: "06", to: "/sales", label: "Vendas" },
-  { n: "07", to: "/team", label: "Equipe & Permissões" },
-  { n: "08", to: "/deboning", label: "Desossa Digital" },
-  { n: "09", to: "/hardware", label: "Hardware & Periféricos" },
-  { n: "10", to: "/company", label: "Empresa & Logomarca" },
+  { n: "04", to: "/categories", label: "Categorias" },
+  { n: "05", to: "/inventory", label: "Estoque & Entradas" },
+  { n: "06", to: "/customers", label: "Clientes" },
+  { n: "07", to: "/sales", label: "Vendas" },
+  { n: "08", to: "/team", label: "Equipe & Permissões" },
+  { n: "09", to: "/deboning", label: "Desossa Digital" },
+  { n: "10", to: "/hardware", label: "Hardware & Periféricos" },
+  { n: "11", to: "/company", label: "Empresa & Logomarca" },
 ] as const;
 
 export function DashboardSidebar() {
