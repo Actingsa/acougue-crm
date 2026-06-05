@@ -566,11 +566,16 @@ export type Database = {
           created_at: string
           id: string
           image_url: string | null
+          is_weighable: boolean
           min_stock: number
           name: string
+          package_grams: number | null
+          plu_code: string | null
           price_cents: number
+          scale_prefix: string | null
           sku: string | null
           stock_qty: number
+          tare_grams: number
           unit: Database["public"]["Enums"]["product_unit"]
           updated_at: string
         }
@@ -583,11 +588,16 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
+          is_weighable?: boolean
           min_stock?: number
           name: string
+          package_grams?: number | null
+          plu_code?: string | null
           price_cents?: number
+          scale_prefix?: string | null
           sku?: string | null
           stock_qty?: number
+          tare_grams?: number
           unit?: Database["public"]["Enums"]["product_unit"]
           updated_at?: string
         }
@@ -600,11 +610,16 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
+          is_weighable?: boolean
           min_stock?: number
           name?: string
+          package_grams?: number | null
+          plu_code?: string | null
           price_cents?: number
+          scale_prefix?: string | null
           sku?: string | null
           stock_qty?: number
+          tare_grams?: number
           unit?: Database["public"]["Enums"]["product_unit"]
           updated_at?: string
         }

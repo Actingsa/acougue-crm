@@ -22,6 +22,13 @@ type Product = {
   stock_qty: number;
   min_stock: number;
   active: boolean;
+  sku: string | null;
+  barcode: string | null;
+  plu_code: string | null;
+  is_weighable: boolean;
+  tare_grams: number;
+  package_grams: number | null;
+  scale_prefix: string | null;
 };
 
 function ProductsPage() {
@@ -163,6 +170,15 @@ function ProductDialog({
   const [cost, setCost] = useState(product ? formatBRL(product.cost_cents) : "");
   const [stock, setStock] = useState(product ? String(product.stock_qty) : "0");
   const [minStock, setMinStock] = useState(product ? String(product.min_stock) : "0");
+  const [sku, setSku] = useState(product?.sku ?? "");
+  const [barcode, setBarcode] = useState(product?.barcode ?? "");
+  const [pluCode, setPluCode] = useState(product?.plu_code ?? "");
+  const [isWeighable, setIsWeighable] = useState<boolean>(product?.is_weighable ?? false);
+  const [tareGrams, setTareGrams] = useState(product ? String(product.tare_grams ?? 0) : "0");
+  const [packageGrams, setPackageGrams] = useState(
+    product?.package_grams != null ? String(product.package_grams) : "",
+  );
+  const [scalePrefix, setScalePrefix] = useState(product?.scale_prefix ?? "");
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -179,6 +195,13 @@ function ProductDialog({
         cost_cents: parseBRLInput(cost),
         stock_qty: Number(stock) || 0,
         min_stock: Number(minStock) || 0,
+        sku: sku.trim() || null,
+        barcode: barcode.trim() || null,
+        plu_code: pluCode.trim() || null,
+        is_weighable: isWeighable,
+        tare_grams: Number(tareGrams) || 0,
+        package_grams: packageGrams.trim() ? Number(packageGrams) : null,
+        scale_prefix: scalePrefix.trim() || null,
       };
       if (product) {
         const { error } = await supabase.from("products").update(payload).eq("id", product.id);
@@ -202,7 +225,7 @@ function ProductDialog({
       <form
         onSubmit={onSubmit}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg space-y-4 border border-border bg-background p-8"
+        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto space-y-4 border border-border bg-background p-8"
       >
         <h2 className="text-xl font-black uppercase tracking-tighter">
           {product ? "Editar produto" : "Novo produto"}
@@ -228,6 +251,54 @@ function ProductDialog({
           <Input label="Estoque atual" value={stock} onChange={setStock} type="number" />
           <Input label="Estoque mínimo" value={minStock} onChange={setMinStock} type="number" />
         </div>
+
+        <div className="border-t border-border pt-4">
+          <div className="mb-3 font-mono text-[10px] uppercase tracking-widest text-primary">
+            Leitor de código de barras / Balança
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <Input label="SKU interno" value={sku} onChange={setSku} placeholder="ex: BOV001" />
+            <Input label="Código PLU (atalho)" value={pluCode} onChange={setPluCode} placeholder="ex: 1234" />
+            <Input label="Código de barras (EAN)" value={barcode} onChange={setBarcode} placeholder="7891234567890" />
+          </div>
+          <label className="mt-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={isWeighable}
+              onChange={(e) => setIsWeighable(e.target.checked)}
+              className="h-4 w-4 accent-primary"
+            />
+            Produto pesável (balança digital)
+          </label>
+          {isWeighable && (
+            <div className="mt-3 grid grid-cols-3 gap-3">
+              <Input
+                label="Prefixo EAN-13 balança"
+                value={scalePrefix}
+                onChange={setScalePrefix}
+                placeholder="ex: 2012345"
+              />
+              <Input
+                label="Tara (g)"
+                value={tareGrams}
+                onChange={setTareGrams}
+                type="number"
+                placeholder="0"
+              />
+              <Input
+                label="Peso embalagem (g)"
+                value={packageGrams}
+                onChange={setPackageGrams}
+                type="number"
+                placeholder="opcional"
+              />
+            </div>
+          )}
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            Padrão de etiqueta da balança: 7 dígitos de prefixo + 5 dígitos de peso (gramas) + DV
+          </p>
+        </div>
+
         <div className="flex justify-end gap-2 pt-4">
           <button
             type="button"
