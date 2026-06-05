@@ -49,7 +49,9 @@ function PdvPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
-        .select("id, name, unit, price_cents, stock_qty")
+        .select(
+          "id, name, unit, price_cents, stock_qty, sku, barcode, plu_code, is_weighable, scale_prefix, tare_grams, package_grams",
+        )
         .eq("company_id", company!.id)
         .eq("active", true)
         .order("name");
@@ -65,12 +67,12 @@ function PdvPage() {
 
   const total = cart.reduce((s, i) => s + i.qty * i.unit_price_cents, 0);
 
-  const addToCart = (p: Product) => {
+  const addToCart = (p: Product, qty = 1) => {
     setCart((c) => {
       const existing = c.find((i) => i.product_id === p.id);
       if (existing) {
         return c.map((i) =>
-          i.product_id === p.id ? { ...i, qty: +(i.qty + 1).toFixed(3) } : i,
+          i.product_id === p.id ? { ...i, qty: +(i.qty + qty).toFixed(3) } : i,
         );
       }
       return [
@@ -80,10 +82,56 @@ function PdvPage() {
           name: p.name,
           unit: p.unit,
           unit_price_cents: p.price_cents,
-          qty: 1,
+          qty: +qty.toFixed(3),
         },
       ];
     });
+  };
+
+  // EAN-13 padrão balança brasileira: 7 dígitos de prefixo (ex.: 2 + 6 do PLU)
+  // + 5 dígitos de peso em gramas + 1 DV. Resolve produto pelo scale_prefix.
+  const resolveCode = (raw: string): { product: Product; qty: number } | null => {
+    const v = raw.trim();
+    if (!v) return null;
+
+    // EAN-13 pesável (começa com 2)
+    if (/^\d{13}$/.test(v) && v.startsWith("2")) {
+      const prefix7 = v.slice(0, 7);
+      const grams = parseInt(v.slice(7, 12), 10);
+      const byPrefix = products.find(
+        (p) => p.is_weighable && p.scale_prefix && p.scale_prefix.replace(/\D/g, "") === prefix7,
+      );
+      if (byPrefix && !Number.isNaN(grams)) {
+        const tare = byPrefix.tare_grams ?? 0;
+        const netKg = Math.max((grams - tare) / 1000, 0);
+        return { product: byPrefix, qty: +netKg.toFixed(3) };
+      }
+    }
+
+    // EAN/SKU/PLU diretos
+    const exact = products.find(
+      (p) =>
+        p.barcode === v ||
+        p.plu_code === v ||
+        p.sku === v ||
+        (p.scale_prefix && p.scale_prefix.replace(/\D/g, "") === v),
+    );
+    if (exact) {
+      const qty = exact.is_weighable && exact.package_grams ? exact.package_grams / 1000 : 1;
+      return { product: exact, qty: +qty.toFixed(3) };
+    }
+    return null;
+  };
+
+  const handleCodeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const found = resolveCode(code);
+    if (!found) {
+      toast.error("Código não encontrado", { description: code });
+      return;
+    }
+    addToCart(found.product, found.qty);
+    setCode("");
   };
 
   const updateQty = (idx: number, qty: number) =>
