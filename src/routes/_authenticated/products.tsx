@@ -22,6 +22,13 @@ type Product = {
   stock_qty: number;
   min_stock: number;
   active: boolean;
+  sku: string | null;
+  barcode: string | null;
+  plu_code: string | null;
+  is_weighable: boolean;
+  tare_grams: number;
+  package_grams: number | null;
+  scale_prefix: string | null;
 };
 
 function ProductsPage() {
