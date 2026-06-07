@@ -158,7 +158,19 @@ function CustomerDialog({
   const [email, setEmail] = useState(customer?.email ?? "");
   const [phone, setPhone] = useState(customer?.phone ?? "");
   const [notes, setNotes] = useState(customer?.notes ?? "");
+  const [zip, setZip] = useState(customer?.address_zip ?? "");
+  const [street, setStreet] = useState(customer?.address_street ?? "");
+  const [number, setNumber] = useState(customer?.address_number ?? "");
+  const [complement, setComplement] = useState(customer?.address_complement ?? "");
+  const [district, setDistrict] = useState(customer?.address_district ?? "");
+  const [city, setCity] = useState(customer?.address_city ?? "");
+  const [stateUf, setStateUf] = useState(customer?.address_state ?? "");
   const [loading, setLoading] = useState(false);
+
+  const cep = useCepLookup(
+    { setStreet, setDistrict, setCity, setState: setStateUf },
+    setZip,
+  );
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,6 +184,13 @@ function CustomerDialog({
         email: email.trim() || null,
         phone: phone.trim() || null,
         notes: notes.trim() || null,
+        address_zip: zip.trim() || null,
+        address_street: street.trim() || null,
+        address_number: number.trim() || null,
+        address_complement: complement.trim() || null,
+        address_district: district.trim() || null,
+        address_city: city.trim() || null,
+        address_state: stateUf.trim().toUpperCase().slice(0, 2) || null,
       };
       if (customer) {
         const { error } = await supabase.from("customers").update(payload).eq("id", customer.id);
@@ -195,7 +214,7 @@ function CustomerDialog({
       <form
         onSubmit={onSubmit}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg space-y-4 border border-border bg-background p-8"
+        className="max-h-[90vh] w-full max-w-2xl space-y-4 overflow-y-auto border border-border bg-background p-8"
       >
         <h2 className="text-xl font-black uppercase tracking-tighter">
           {customer ? "Editar cliente" : "Novo cliente"}
@@ -206,6 +225,46 @@ function CustomerDialog({
           <Input label="E-mail" value={email} onChange={setEmail} type="email" />
           <Input label="Telefone" value={phone} onChange={setPhone} />
         </div>
+
+        <div className="border-t border-border pt-4">
+          <h3 className="mb-3 font-mono text-[10px] uppercase tracking-widest text-primary">
+            Endereço
+          </h3>
+          <div className="grid grid-cols-[1fr_auto] items-end gap-3">
+            <Input
+              label="CEP"
+              value={zip}
+              onChange={cep.onCepChange}
+              onBlur={(e) => cep.onCepBlur(e.target.value)}
+              placeholder="00000-000"
+              inputMode="numeric"
+              maxLength={9}
+            />
+            {cep.loading && (
+              <span className="pb-3 font-mono text-[10px] uppercase tracking-widest text-primary">
+                buscando…
+              </span>
+            )}
+          </div>
+          <div className="mt-3 grid grid-cols-[3fr_1fr] gap-3">
+            <Input label="Endereço" value={street} onChange={setStreet} />
+            <Input label="Número" value={number} onChange={setNumber} />
+          </div>
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <Input label="Complemento" value={complement} onChange={setComplement} />
+            <Input label="Bairro" value={district} onChange={setDistrict} />
+          </div>
+          <div className="mt-3 grid grid-cols-[2fr_1fr] gap-3">
+            <Input label="Cidade" value={city} onChange={setCity} />
+            <Input
+              label="UF"
+              value={stateUf}
+              onChange={(v) => setStateUf(v.toUpperCase().slice(0, 2))}
+              maxLength={2}
+            />
+          </div>
+        </div>
+
         <label className="block">
           <span className="mb-1 block font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
             Observações
