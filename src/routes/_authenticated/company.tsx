@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { DashboardTopbar } from "@/components/dashboard/Topbar";
 import { getCompanyProfile, updateCompanyProfile } from "@/lib/company.functions";
+import { useCepLookup } from "@/lib/cep";
 
 export const Route = createFileRoute("/_authenticated/company")({
   component: CompanyPage,
@@ -66,6 +67,17 @@ function CompanyPage() {
   const [form, setForm] = useState<FormState>(empty);
   const [uploading, setUploading] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+
+  const cep = useCepLookup(
+    {
+      setStreet: (v) => setForm((f) => ({ ...f, address_street: v })),
+      setDistrict: (v) => setForm((f) => ({ ...f, address_district: v })),
+      setCity: (v) => setForm((f) => ({ ...f, address_city: v })),
+      setState: (v) => setForm((f) => ({ ...f, address_state: v })),
+    },
+    (v) => setForm((f) => ({ ...f, address_zip: v })),
+  );
+
 
   const { data } = useQuery({
     queryKey: ["company-profile", company?.id],
@@ -219,20 +231,31 @@ function CompanyPage() {
             </Group>
 
             <Group title="Endereço">
-              <Grid cols={[3, 1]}>
+              <Grid cols={[1, 3]}>
+                <F label={`CEP${cep.loading ? " · buscando…" : ""}`}>
+                  <input
+                    value={form.address_zip}
+                    onChange={(e) => cep.onCepChange(e.target.value)}
+                    onBlur={(e) => cep.onCepBlur(e.target.value)}
+                    placeholder="00000-000"
+                    inputMode="numeric"
+                    maxLength={9}
+                    className={input}
+                  />
+                </F>
                 <F label="Logradouro"><I value={form.address_street} onChange={(v) => setForm({ ...form, address_street: v })} /></F>
-                <F label="Número"><I value={form.address_number} onChange={(v) => setForm({ ...form, address_number: v })} /></F>
               </Grid>
-              <Grid cols={2}>
+              <Grid cols={[1, 2]}>
+                <F label="Número"><I value={form.address_number} onChange={(v) => setForm({ ...form, address_number: v })} /></F>
                 <F label="Complemento"><I value={form.address_complement} onChange={(v) => setForm({ ...form, address_complement: v })} /></F>
-                <F label="Bairro"><I value={form.address_district} onChange={(v) => setForm({ ...form, address_district: v })} /></F>
               </Grid>
               <Grid cols={3}>
+                <F label="Bairro"><I value={form.address_district} onChange={(v) => setForm({ ...form, address_district: v })} /></F>
                 <F label="Cidade"><I value={form.address_city} onChange={(v) => setForm({ ...form, address_city: v })} /></F>
                 <F label="UF"><I value={form.address_state} onChange={(v) => setForm({ ...form, address_state: v.toUpperCase().slice(0, 2) })} /></F>
-                <F label="CEP"><I value={form.address_zip} onChange={(v) => setForm({ ...form, address_zip: v })} /></F>
               </Grid>
             </Group>
+
 
             <Group title="Personalização de impressões">
               <F label="Rodapé padrão para cupons e relatórios">
