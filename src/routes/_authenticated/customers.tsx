@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { DashboardTopbar } from "@/components/dashboard/Topbar";
 import { Input } from "./products";
+import { useCepLookup } from "@/lib/cep";
 
 export const Route = createFileRoute("/_authenticated/customers")({
   component: CustomersPage,
@@ -19,6 +20,13 @@ type Customer = {
   phone: string | null;
   doc: string | null;
   notes: string | null;
+  address_zip: string | null;
+  address_street: string | null;
+  address_number: string | null;
+  address_complement: string | null;
+  address_district: string | null;
+  address_city: string | null;
+  address_state: string | null;
 };
 
 function CustomersPage() {
