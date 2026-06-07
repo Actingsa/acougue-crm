@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { DashboardTopbar } from "@/components/dashboard/Topbar";
 import { getCompanyProfile, updateCompanyProfile } from "@/lib/company.functions";
+import { useCepLookup } from "@/lib/cep";
 
 export const Route = createFileRoute("/_authenticated/company")({
   component: CompanyPage,
