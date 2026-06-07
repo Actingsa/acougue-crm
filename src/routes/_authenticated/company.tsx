@@ -68,6 +68,17 @@ function CompanyPage() {
   const [uploading, setUploading] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
+  const cep = useCepLookup(
+    {
+      setStreet: (v) => setForm((f) => ({ ...f, address_street: v })),
+      setDistrict: (v) => setForm((f) => ({ ...f, address_district: v })),
+      setCity: (v) => setForm((f) => ({ ...f, address_city: v })),
+      setState: (v) => setForm((f) => ({ ...f, address_state: v })),
+    },
+    (v) => setForm((f) => ({ ...f, address_zip: v })),
+  );
+
+
   const { data } = useQuery({
     queryKey: ["company-profile", company?.id],
     enabled: !!company?.id,
