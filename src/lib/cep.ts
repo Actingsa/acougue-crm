@@ -21,7 +21,37 @@ export type ViaCepAddress = {
   erro?: boolean | "true";
 };
 
+type BrasilApiCepAddress = {
+  cep: string;
+  state: string;
+  city: string;
+  neighborhood: string | null;
+  street: string | null;
+};
+
 const cache = new Map<string, ViaCepAddress | null>();
+
+function fromBrasilApi(data: BrasilApiCepAddress): ViaCepAddress {
+  return {
+    cep: data.cep,
+    logradouro: data.street ?? "",
+    bairro: data.neighborhood ?? "",
+    localidade: data.city ?? "",
+    uf: data.state ?? "",
+  };
+}
+
+async function lookupBrasilApiCep(digits: string): Promise<ViaCepAddress | null> {
+  const res = await fetch(`https://brasilapi.com.br/api/cep/v2/${digits}`, {
+    headers: { Accept: "application/json" },
+    cache: "no-store",
+  });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error("network");
+  const data = (await res.json()) as BrasilApiCepAddress;
+  if (!data?.city || !data?.state) return null;
+  return fromBrasilApi(data);
+}
 
 export async function lookupCep(cep: string): Promise<ViaCepAddress | null> {
   const digits = onlyDigits(cep);
@@ -34,8 +64,9 @@ export async function lookupCep(cep: string): Promise<ViaCepAddress | null> {
   if (!res.ok) throw new Error("network");
   const data = (await res.json()) as ViaCepAddress;
   if (data?.erro) {
-    cache.set(digits, null);
-    return null;
+    const fallback = await lookupBrasilApiCep(digits);
+    cache.set(digits, fallback);
+    return fallback;
   }
   cache.set(digits, data);
   return data;
