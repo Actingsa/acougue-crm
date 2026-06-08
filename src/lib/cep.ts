@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export function onlyDigits(v: string): string {
@@ -18,15 +18,26 @@ export type ViaCepAddress = {
   localidade: string;
   uf: string;
   complemento?: string;
+  erro?: boolean | "true";
 };
+
+const cache = new Map<string, ViaCepAddress | null>();
 
 export async function lookupCep(cep: string): Promise<ViaCepAddress | null> {
   const digits = onlyDigits(cep);
   if (digits.length !== 8) return null;
-  const res = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
+  if (cache.has(digits)) return cache.get(digits)!;
+  const res = await fetch(`https://viacep.com.br/ws/${digits}/json/`, {
+    headers: { Accept: "application/json" },
+    cache: "no-store",
+  });
   if (!res.ok) throw new Error("network");
-  const data = (await res.json()) as ViaCepAddress & { erro?: boolean };
-  if (data.erro) return null;
+  const data = (await res.json()) as ViaCepAddress;
+  if (data?.erro) {
+    cache.set(digits, null);
+    return null;
+  }
+  cache.set(digits, data);
   return data;
 }
 
@@ -39,56 +50,47 @@ export type CepTargets = {
 
 /**
  * Reusable CEP autofill hook.
- * Returns: { loading, onCepChange, onCepBlur } to wire on the CEP input.
- * Formats CEP as 00000-000, looks up viacep when 8 digits are present
- * or on blur, dedupes repeated lookups for the same CEP.
+ * Wire onCepChange to onChange (string) and onCepBlur to onBlur of the CEP input.
+ * Triggers lookup automatically when 8 digits are entered, or on blur.
  */
 export function useCepLookup(targets: CepTargets, setCep: (v: string) => void) {
   const [loading, setLoading] = useState(false);
-  const lastQueried = useRef<string>("");
+  const [lastQueried, setLastQueried] = useState("");
 
-  const doLookup = useCallback(
-    async (raw: string) => {
-      const digits = onlyDigits(raw);
-      if (digits.length !== 8) return;
-      if (lastQueried.current === digits) return;
-      lastQueried.current = digits;
-      setLoading(true);
-      try {
-        const addr = await lookupCep(digits);
-        if (!addr) {
-          toast.error("CEP não encontrado.");
-          return;
-        }
-        if (targets.setStreet && addr.logradouro) targets.setStreet(addr.logradouro);
-        if (targets.setDistrict && addr.bairro) targets.setDistrict(addr.bairro);
-        if (targets.setCity) targets.setCity(addr.localidade ?? "");
-        if (targets.setState) targets.setState((addr.uf ?? "").toUpperCase());
-      } catch {
-        toast.error("Não foi possível consultar o CEP. Tente novamente.");
-        lastQueried.current = "";
-      } finally {
-        setLoading(false);
+  async function doLookup(raw: string) {
+    const digits = onlyDigits(raw);
+    if (digits.length !== 8) return;
+    if (lastQueried === digits) return;
+    setLastQueried(digits);
+    setLoading(true);
+    try {
+      const addr = await lookupCep(digits);
+      if (!addr) {
+        toast.error("CEP não encontrado.");
+        return;
       }
-    },
-    [targets],
-  );
+      targets.setStreet?.(addr.logradouro ?? "");
+      targets.setDistrict?.(addr.bairro ?? "");
+      targets.setCity?.(addr.localidade ?? "");
+      targets.setState?.((addr.uf ?? "").toUpperCase());
+      toast.success("Endereço preenchido pelo CEP");
+    } catch {
+      toast.error("Não foi possível consultar o CEP. Tente novamente.");
+      setLastQueried("");
+    } finally {
+      setLoading(false);
+    }
+  }
 
-  const onCepChange = useCallback(
-    (v: string) => {
-      const masked = formatCep(v);
-      setCep(masked);
-      if (onlyDigits(masked).length === 8) void doLookup(masked);
-    },
-    [doLookup, setCep],
-  );
+  function onCepChange(v: string) {
+    const masked = formatCep(v);
+    setCep(masked);
+    if (onlyDigits(masked).length === 8) void doLookup(masked);
+  }
 
-  const onCepBlur = useCallback(
-    (v: string) => {
-      if (onlyDigits(v).length === 8) void doLookup(v);
-    },
-    [doLookup],
-  );
+  function onCepBlur(v: string) {
+    if (onlyDigits(v).length === 8) void doLookup(v);
+  }
 
   return { loading, onCepChange, onCepBlur };
 }
