@@ -8,7 +8,7 @@ export function SiteFooter() {
             <span className="text-foreground">.CRM</span>
           </div>
           <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            © 2026 CarneOS Systems · High-Precision Meat Tech
+            © 2026 Carne.CRM · ACTING Tecnologia
           </p>
         </div>
         <div className="flex gap-12 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
